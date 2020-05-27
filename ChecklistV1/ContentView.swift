@@ -13,17 +13,34 @@ struct ContentView: View {
     var body: some View {
         NavigationView{
             List{
-                Text(checklistItems[0]).onTapGesture {
-                    self.checklistItems[0] = "Take the dog to the vet"
-                }
-                Text(checklistItems[1])
-                Text(checklistItems[2])
-                Text(checklistItems[3])
-                Text(checklistItems[4])
+                ForEach(checklistItems, id: \.self){
+                    item in Text(item)
+                }// End of ForEach
+                .onDelete(perform: deleteListItem)
+                .onMove(perform: moveListItem)
             }// End of List
+            .navigationBarItems(trailing: EditButton())
             .navigationBarTitle("Checklist")
+            .onAppear(){
+                self.printChecklistContents()
+            }
         }// End of Navigation View
     }// End of body
+    
+    // Method
+    func printChecklistContents(){
+        for item in checklistItems{
+            print(item)
+        }
+    }
+    func deleteListItem(whichElement: IndexSet){
+        checklistItems.remove(atOffsets: whichElement)
+        printChecklistContents()
+    }
+    func moveListItem(whichElement: IndexSet, destination: Int){
+        checklistItems.move(fromOffsets: whichElement, toOffset: destination)
+        printChecklistContents()
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
